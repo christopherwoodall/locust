@@ -1,6 +1,6 @@
 # Locust: shared memory layer for the swarm — vision brief
 
-**Date:** 2026-10-06. **Status:** read-and-distill only; no build decisions made.
+**Date:** 2026-10-06. **Status:** read-and-distill only; no build decisions made. **Evening update:** added link-memory (summaries + deep reach) and multi-project namespace sections per his word.
 
 ## Elevator pitch
 
@@ -59,6 +59,28 @@ The whole system must be expressible as a skill. No dashboards to install, no se
 
 The architecture leaves room for more channels (an alerts channel, an artifacts channel, per-project channels) without redesign: adding a channel is adding a namespace with conventions, ideally as a plugin, not a core change.
 
+## Link memory: summaries with deep reach
+
+The swarm constantly encounters links — papers, articles, docs, repos, dashboards, threads. Losing them means re-finding them later; dumping raw captures means an unsearchable pile. The convention:
+
+- **Every saved link gets a note.** The note carries the URL, when and why it was saved, a concise summary (what it says, why it matters to us), key extracts or quotes, and project tags. The note — not the raw page — is the searchable unit.
+- **Two tiers.** (1) The *summary layer*: compact, always loaded, searchable. Agents work from summaries by default. (2) The *deep layer*: the full content, captured at save time or fetched on demand. When the situation calls for it, the agent reaches past the summary into the deep capture.
+- **Capture at save time matters.** Links rot, pages change, paywalls appear. Saving a snapshot — or at minimum the summary plus key quotes — at capture time preserves what we actually saw, not what the URL serves six months later.
+- **Proposed (not final) frontmatter for a link note:** `url`, `saved_at`, `saved_by`, `projects[]`, `summary`, `key_points[]`, `deep_capture` (path to a snapshot, or `on-demand`).
+
+The principle: search the summaries, reach into the depths. The vault stays navigable because the deep stuff is one hop away, never in the way.
+
+## Multiple projects
+
+This system is not one project — it is the memory for all of them. An agent may work the locust build today and the Tennessee code review tomorrow; both need memory, and neither should pollute the other.
+
+- **Projects are namespaces.** Every memory-channel write belongs to a project — a top-level folder, a frontmatter field, or both (mechanics TBD). Reads default to the agent's active project; cross-project search is explicit, not accidental.
+- **Cross-project links are first-class.** A finding in one project can reference a note in another without copying it. The vault is one graph; projects are views over it.
+- **Onboarding scopes the agent.** Joining the swarm and being attached to project(s) are two steps of the same handoff. The skill teaches both: where the swarm lives, and which project(s) this agent works in.
+- **Project lifecycle.** Projects get created, go dormant, get archived. The vault keeps all of them searchable without letting dormant projects noise up the active set. Archive conventions TBD.
+
+The `locus-vault` "other things" clause from the original brief now has its primary meaning: the vault hosts many projects' memories side by side, plus indexes and auxiliary artifacts.
+
 ## Onboarding flow: joining the swarm
 
 1. **Handoff:** the human (or a parent agent) gives a new agent the locust skill. That single artifact is the whole package — no separate setup docs, no credential ceremony.
@@ -78,6 +100,8 @@ Explicitly not decided in this phase — build comes later:
 - **Channel taxonomy:** which channels ship at v1 beyond memory and command, and the exact conventions each enforces.
 - **Skill packaging:** what the skill bundles (scripts? schemas? just docs?) and how it stays in sync with the repos.
 - **The `locus-vault` "other things":** what else lives in the vault repo besides memory, and where the line is.
+- **Link memory mechanics:** snapshot-at-save vs live-fetch-on-demand for the deep layer; where snapshots live and how big they may get; who writes the summary and in what format; how deep captures stay fresh or get marked stale.
+- **Project namespace mechanics:** folder-per-project vs frontmatter-only vs vault-per-project; the default read scope for an agent; how cross-project search and linking work in practice; archive conventions for dormant projects.
 
 ## Relation to GitSwarm
 
