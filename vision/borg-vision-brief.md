@@ -81,6 +81,21 @@ This system is not one project — it is the memory for all of them. An agent ma
 
 The `locus-vault` "other things" clause from the original brief now has its primary meaning: the vault hosts many projects' memories side by side, plus indexes and auxiliary artifacts.
 
+## The heterogeneous swarm: one memory, many minds
+
+The swarm isn't one kind of agent. opencode, droid, codex, Muse, Hermes — different platforms, different tools, different strengths, doing different things. The locust layer is what lets them share context and work in coop anyway.
+
+- **The skill is platform-agnostic.** It can't assume my tools or opencode's tools. It teaches the shared substrate — where the vault is, how channels work, the read/write conventions — in plain markdown and protocol, so anything that can read files and follow instructions can join.
+- **Shared context is the point.** A discovery made by codex, a decision recorded by droid, a link summary saved by opencode — all land in the same memory channel, in the same project namespace, readable by everyone. Context stops being trapped inside one agent's session.
+- **Coop, not just coexistence.** Beyond passive sharing: agents coordinate through the command channel. An agent posts a task or a request for help; another with the right capabilities picks it up. Handoffs carry context as links into the memory channel, not by re-explaining everything from scratch.
+- **Identity + capabilities.** Every member registers: who it is (platform, instance), what it can do, what it's currently working on. A capability directory lets agents route work to whoever's best suited instead of shouting into the void.
+
+Design consequences:
+
+- **Provenance on everything.** Writes carry who wrote them and when. Trust is per-author and earned — a note from a proven agent weighs more than a first-day one.
+- **Conventions stay dumb-simple.** The lowest common denominator across platforms is "read markdown, write markdown, follow a checklist." Anything fancier lives in per-platform plugins, not the core contract.
+- **Filters and namespaces are universal.** The secret filter and project namespaces apply the same no matter which platform writes.
+
 ## Onboarding flow: joining the swarm
 
 1. **Handoff:** the human (or a parent agent) gives a new agent the locust skill. That single artifact is the whole package — no separate setup docs, no credential ceremony.
@@ -88,6 +103,8 @@ The `locus-vault` "other things" clause from the original brief now has its prim
 3. **Access:** the agent clones or otherwise gains read/write access to the vault. The access path is whatever the skill documents; the principle is that access is part of the skill, not a separate manual step.
 4. **Knowledge:** the agent reads the vault's structure and the channel conventions — what the memory channel holds, what the command channel is for, how to write without tripping the secret filter.
 5. **Join:** the agent announces itself on the command channel and begins reading from and writing to the memory channel. It is now part of the swarm — assimilated, "sort of like the borg," except the collective memory is a git repo you can open in Obsidian.
+
+For heterogeneous agents (opencode, droid, codex, Hermes, …), two extra onboarding steps: **register identity** (platform, instance, what it is) and **advertise capabilities** (what it can do), both as notes in an agreed location, so the rest of the swarm knows who's here and what they're good for.
 
 ## Open questions / deferred decisions
 
@@ -102,6 +119,7 @@ Explicitly not decided in this phase — build comes later:
 - **The `locus-vault` "other things":** what else lives in the vault repo besides memory, and where the line is.
 - **Link memory mechanics:** snapshot-at-save vs live-fetch-on-demand for the deep layer; where snapshots live and how big they may get; who writes the summary and in what format; how deep captures stay fresh or get marked stale.
 - **Project namespace mechanics:** folder-per-project vs frontmatter-only vs vault-per-project; the default read scope for an agent; how cross-project search and linking work in practice; archive conventions for dormant projects.
+- **Heterogeneous coop:** addressing and routing — how an agent directs a request at a specific other agent vs broadcasting; the task lifecycle on the command channel (post → claim → status → done/abort); conflict resolution when two agents disagree or both claim a task; the capability directory's format and location; how much of GitSwarm's protocol (in-flight logs, nomination) ports to agents that don't share a harness.
 
 ## Relation to GitSwarm
 
